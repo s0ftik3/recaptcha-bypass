@@ -18,9 +18,9 @@ axios.interceptors.request.use(
 
 if (!String.prototype.format) {
     String.prototype.format = function () {
-        var args = arguments
+        const args = arguments
         return this.replace(/{(\d+)}/g, function (match, number) {
-            return typeof args[number] != 'undefined' ? args[number] : match
+            return typeof args[number] !== 'undefined' ? args[number] : match
         })
     }
 }
@@ -28,16 +28,19 @@ if (!String.prototype.format) {
 module.exports = class ReCaptchaBypass {
     constructor(anchor) {
         this._anchor = anchor
+        this._params = parse(anchor)
     }
 
+    /**
+     * @returns {Promise<any>}
+     */
     async bypass() {
         const reCaptchaToken = await this.#getReCaptchaToken()
-        const params = parse(this._anchor)
-        const data = this.#getPostData(reCaptchaToken, params)
+        const data = this.#getPostData(reCaptchaToken, this._params)
 
         const reload = await axios({
             method: 'POST',
-            url: RELOAD_URL + params.k,
+            url: RELOAD_URL + this._params.k,
             data,
         })
 
@@ -48,7 +51,7 @@ module.exports = class ReCaptchaBypass {
     }
 
     /**
-     * @returns {string|undefined}
+     * @returns {Promise<*|string>}
      */
     async #getReCaptchaToken() {
         const { data } = await axios({
@@ -65,11 +68,14 @@ module.exports = class ReCaptchaBypass {
     }
 
     /**
-     * @param {string} reCaptchaToken
+     * @param reCaptchaToken
      * @param params
      * @returns {string}
      */
     #getPostData(reCaptchaToken, params) {
+        if (!params.v || !params.k || !params.co)
+            throw new Error('params parameter must include all the listed params: v, k and co')
+
         return POST_DATA.format(params.v, reCaptchaToken, params.k, params.co)
     }
 }

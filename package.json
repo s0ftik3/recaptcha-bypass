@@ -1,17 +1,25 @@
 {
   "name": "recaptcha-bypass",
   "version": "1.0.0",
-  "description": "",
+  "description": "Google ReCaptchaV3 bypass using Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node example/app.js",
+    "prettier": "npx prettier --write ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "recaptcha",
+    "recaptcha v3",
+    "bypass"
+  ],
+  "author": "Vyacheslav <slava021323@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.12",
     "qs": "^6.11.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1"
   }
 }
